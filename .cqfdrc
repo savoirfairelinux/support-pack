@@ -1,0 +1,7 @@
+[project]
+org='sfl'
+name='support-pack'
+
+[build]
+command='cd tests && bats .'
+
