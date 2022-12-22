@@ -15,6 +15,8 @@ printer()
     sed 's/^/# /' >&3
 }
 
+# Test setup executed by bats before any test.
+#
 setup()
 {
     rm -rf patate
@@ -24,12 +26,18 @@ setup()
     CONFDIR=".."
 }
 
+# Test teardown executed by bats after any test.
+#
 teardown()
 {
     cd ..
     rm -rf patate
 }
 
+# Most test in this test suite will run the support-pack command using a
+# test-specific conf file in this directory. The run_conf commands does this and
+# extract the resulting archive in the current directory for inspection.
+#
 run_conf()
 {
     local conf="${1}"
@@ -60,7 +68,8 @@ hello
 EOF
 }
 
-# Test a command that fails and check that support-pack.txt contains traces of this.
+# Test a command that fails and check that support-pack.txt contains traces of
+# this.
 @test "Failed command conf" {
     run_conf failed_command.conf
     [ -f support-pack.txt ]
@@ -88,8 +97,8 @@ echo outside of log file
 EOF
 }
 
-# If a conf file does not redirect command outputs to log files, stderr output is
-# catched by the support-pack.txt file.
+# If a conf file does not redirect command outputs to log files, stderr output
+# is catched by the support-pack.txt file.
 @test "Output to stderr conf" {
     run_conf output_to_stderr.conf
     [ -f support-pack.txt ]
