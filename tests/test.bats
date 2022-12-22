@@ -47,6 +47,11 @@ run_conf()
 @test "Hello conf" {
     run_conf hello.conf
     [ -f support-pack.txt ]
+        cat  <<EOF | cmp - support-pack.txt
+[INFO ] Exec command "echo hello"
+[INFO ] Created file "hello.txt"
+EOF
+
     [ -f hello.txt ]
     cat  <<EOF | cmp - hello.txt
 [SUPPORT-PACK] >>>> echo hello
