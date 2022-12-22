@@ -88,10 +88,6 @@ support_cmd()
 #
 support_log_file()
 {
-    if [ -n "$1" ]; then
-        log_info "support_log_file: No file provided"
-    fi
-
     local tmpfile=$(mktemp)
     cat >>"${tmpfile}"
     mv -f "${tmpfile}" "$WORKDIR/$1"
