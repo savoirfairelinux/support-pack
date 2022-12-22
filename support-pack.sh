@@ -65,7 +65,7 @@ support_cmd()
     local ret
 
     echo "[SUPPORT-PACK] >>>> $*"
-    log_info "  Exec command \"$*\""
+    log_info "Exec command \"$*\""
     local errfile=$(mktemp)
 
     # TERM is vt100 to avoid most color/control chars in generated text files.
