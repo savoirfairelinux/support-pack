@@ -19,9 +19,9 @@ printer()
 #
 setup()
 {
-    rm -rf patate
-    mkdir patate
-    cd patate
+    rm -rf testdir
+    mkdir testdir
+    cd testdir
     SUPPORT_PACK="../../support-pack.sh"
     CONFDIR=".."
 }
@@ -31,7 +31,7 @@ setup()
 teardown()
 {
     cd ..
-    rm -rf patate
+    rm -rf testdir
 }
 
 # Most test in this test suite will run the support-pack command using a
