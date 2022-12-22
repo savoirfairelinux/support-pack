@@ -62,7 +62,7 @@ EOF
     cat  <<EOF | cmp - support-pack.txt
 [INFO ] Exec command "command_that_fails"
 [ERROR] "command_that_fails" returned a non-zero error code: 1
-        -> This is an error
+	-> This is an error
 [INFO ] Created file "command_that_fails.txt"
 EOF
 
