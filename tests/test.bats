@@ -59,11 +59,19 @@ run_conf()
     [ -f support-pack.txt ]
 }
 
+@test "support_info and support_error" {
+    run_conf info.conf
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] An info message
+[ERROR] An error message
+EOF
+}
+
 # Generates an archive with a hello.txt file and check its content.
 @test "Hello conf" {
     run_conf hello.conf
     [ -f support-pack.txt ]
-        cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | cmp - support-pack.txt
 [INFO ] Exec command "echo hello"
 [INFO ] Created file "hello.txt"
 EOF
