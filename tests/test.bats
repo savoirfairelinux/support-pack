@@ -113,6 +113,27 @@ EOF
 EOF
 }
 
+@test "Copy a file that doesn't exist" {
+    run_conf copy_file.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[ERROR] test.txt doesn't exist or is not a regular file.
+[ERROR] test.txt doesn't exist or is not a regular file.
+EOF
+}
+
+@test "Copy a file that exist" {
+    echo "Test123" > test.txt
+    run_conf copy_file.conf
+    [ -f test.txt ]
+    [ -f some/directory/file.txt ]
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] Copying "test.txt" to "test.txt"
+[INFO ] Copying "test.txt" to "some/directory/file.txt"
+EOF
+}
+
 # If a conf file does not redirect command outputs to log files, the output is
 # catched by the support-pack.txt file.
 @test "Output to stdout conf" {

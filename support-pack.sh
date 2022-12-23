@@ -111,7 +111,7 @@ support_copy_file()
         dst="$1"
     fi
 
-    support_info "Copying \"$1\" to \"${WORKDIR}/${dst}\""
+    support_info "Copying \"$1\" to \"${dst}\""
     mkdir -p "$(dirname "${WORKDIR}/${dst}")"
     cp "${1}" "${WORKDIR}/${dst}"
 }
