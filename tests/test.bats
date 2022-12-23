@@ -41,8 +41,16 @@ teardown()
 run_conf()
 {
     local conf="${1}"
-    run ${SUPPORT_PACK} ${CONFDIR}/${conf} -o ./support-pack.tar.gz
-    tar -xf support-pack.tar.gz
+    local archive="support-pack.tar.gz"
+    ${SUPPORT_PACK} ${CONFDIR}/${conf} -o ./$archive 1>stdout.txt 2>stderr.txt
+
+    # Make sure that support-pack exited with a zero return code.
+    [ $? -eq 0 ]
+
+    # Make sure that stdout contains only the name of the output archive.
+    [ "$(cat stdout.txt)" = "$(pwd)/$archive" ]
+
+    tar -xf $archive
 }
 
 # Generates an archive with a single support-pack.txt file.
@@ -66,6 +74,16 @@ EOF
 hello
 
 EOF
+}
+
+# Verify that the "--notgz" option creates a directory and that the path of this
+# directory is printed to stdout.
+@test "No compression" {
+    ${SUPPORT_PACK} ${CONFDIR}/hello.conf --notgz 1>stdout.txt 2>stderr.txt
+    [ $? -eq 0 ]
+    local dirname="$(cat stdout.txt)"
+    [ -d "$dirname" ]
+    [ -f "$dirname/hello.txt" ]
 }
 
 # Test a command that fails and check that support-pack.txt contains traces of

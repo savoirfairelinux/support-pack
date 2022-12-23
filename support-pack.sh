@@ -205,10 +205,13 @@ main()
             die "Fatal: Fail to create ${ARCHIVE}"
         local size=$(du -h ${ARCHIVE} | cut -f1)
         log_info "Archive \"${ARCHIVE}\" (${size}) has been created."
-    fi
 
-    # Outputs the name of the archive created.
-    readlink -f "${ARCHIVE}"
+        # Outputs the name of the archive created.
+        readlink -f "${ARCHIVE}"
+    else
+        # Outputs the name of the working directory.
+        readlink -f "${WORKDIR}"
+    fi
 }
 
 # Cleanup of temporary files
