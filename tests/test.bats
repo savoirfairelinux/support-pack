@@ -134,6 +134,73 @@ EOF
 EOF
 }
 
+@test "Copy a directory that doesn't exist" {
+    run_conf copy_dir.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[ERROR] mydir doesn't exist or is not a directory.
+[ERROR] mydir doesn't exist or is not a directory.
+EOF
+}
+
+@test "Copy a directory that is actually a file" {
+    touch mydir
+    run_conf copy_dir.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[ERROR] mydir doesn't exist or is not a directory.
+[ERROR] mydir doesn't exist or is not a directory.
+EOF
+}
+
+@test "Copy an empty directory" {
+    mkdir mydir
+    run_conf copy_dir.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] Copying "mydir" to "."
+[INFO ] Copying "mydir" to "some/nested/dir/"
+EOF
+    [ -d mydir ]
+    [ -d some ]
+    [ -d some/nested ]
+    [ -d some/nested/dir ]
+    [ -d some/nested/dir/mydir ]
+}
+
+@test "Copy a complex directory structure" {
+    mkdir mydir
+    touch mydir/a
+    touch mydir/b
+    mkdir mydir/c
+    touch mydir/c/d
+    touch mydir/c/e
+    ln -sf c/e mydir/link
+    run_conf copy_dir.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] Copying "mydir" to "."
+[INFO ] Copying "mydir" to "some/nested/dir/"
+EOF
+    [ -d mydir ]
+    [ -d mydir/c ]
+    [ -d some ]
+    [ -d some/nested ]
+    [ -d some/nested/dir ]
+    [ -d some/nested/dir/mydir ]
+    [ -d some/nested/dir/mydir/c ]
+    [ -f mydir/a ]
+    [ -f mydir/b ]
+    [ -f mydir/c/d ]
+    [ -f mydir/c/e ]
+    [ -f mydir/link ]
+    [ -f some/nested/dir/mydir/a ]
+    [ -f some/nested/dir/mydir/b ]
+    [ -f some/nested/dir/mydir/c/d ]
+    [ -f some/nested/dir/mydir/c/e ]
+    [ -f some/nested/dir/mydir/link ]
+}
+
 # If a conf file does not redirect command outputs to log files, the output is
 # catched by the support-pack.txt file.
 @test "Output to stdout conf" {

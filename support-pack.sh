@@ -128,14 +128,14 @@ support_copy_dir()
         return
     fi
 
-    if [ -z "$2" ]; then
-        support_error "support_copy_dir destination is empty."
-        return
+    local dst="$2"
+    if [ -z "$dst" ]; then
+        dst=$(dirname "${1}")
     fi
 
-    support_info "Copying \"${1}\" to \"${WORKDIR}/${2}\""
-    mkdir -p "$(dirname "${WORKDIR}/${2}")"
-    cp -a "${1}" "${WORKDIR}/${2}"
+    support_info "Copying \"${1}\" to \"${dst}\""
+    mkdir -p "${WORKDIR}/${dst}"
+    cp -r -L "${1}" "${WORKDIR}/${dst}"
 }
 
 usage()
