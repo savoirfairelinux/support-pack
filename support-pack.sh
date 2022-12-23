@@ -38,12 +38,12 @@ die()
     exit 1
 }
 
-log_info()
+support_info()
 {
     echo "[INFO ] $*" 1>&2
 }
 
-log_error()
+support_error()
 {
     echo "[ERROR] $*" 1>&2
 }
@@ -58,21 +58,21 @@ log_error()
 # arg1: the command to run
 #
 # example:
-#   support_cmd ps | support_file process.txt
+#   support_cmd ps | support_log_file process.txt
 #
 support_cmd()
 {
     local ret
 
     echo "[SUPPORT-PACK] >>>> $*"
-    log_info "Exec command \"$*\""
+    support_info "Exec command \"$*\""
     local errfile=$(mktemp)
 
     # TERM is vt100 to avoid most color/control chars in generated text files.
     TERM=vt100 "$@" 2>"${errfile}"
     ret=$?
     if [ "${ret}" != "0" ]; then
-        log_error "\"$*\" returned a non-zero error code: ${ret}"
+        support_error "\"$*\" returned a non-zero error code: ${ret}"
         cat "${errfile}" | sed 's/^/\t-> /' 1>&2
     fi
 
@@ -84,14 +84,14 @@ support_cmd()
 # arg1: name of the file.
 #
 # examples:
-#   support_cmd echo "Hello, World!" | support_file dummy.txt
+#   support_cmd echo "Hello, World!" | support_log_file dummy.txt
 #
 support_log_file()
 {
     local tmpfile=$(mktemp)
     cat >>"${tmpfile}"
     mv -f "${tmpfile}" "$WORKDIR/$1"
-    log_info "Created file \"$1\""
+    support_info "Created file \"$1\""
 }
 
 # Copy a file to the support-pack.
@@ -99,10 +99,10 @@ support_log_file()
 # arg2: (optional) Name of the destination file in the support-pack. The name is
 #       relative to the root of the support-pack.
 #       If missing, use same name as source file.
-support_pack_add_file()
+support_copy_file()
 {
     if [ ! -f "$1" ]; then
-        log_error "$1 doesn't exist or is not a regular file."
+        support_error "$1 doesn't exist or is not a regular file."
         return
     fi
 
@@ -111,7 +111,7 @@ support_pack_add_file()
         dst="$1"
     fi
 
-    log_info "Copying \"$1\" to \"${WORKDIR}/${dst}\""
+    support_info "Copying \"$1\" to \"${WORKDIR}/${dst}\""
     mkdir -p "$(dirname "${WORKDIR}/${dst}")"
     cp "${1}" "${WORKDIR}/${dst}"
 }
@@ -121,19 +121,19 @@ support_pack_add_file()
 # arg2: (optional) Name of the destination directory in the support-pack.
 #       The name is relative to the root of the support-pack.
 #       If missing, use same name as source file.
-support_pack_add_dir ()
+support_copy_dir()
 {
     if [ ! -d "$1" ]; then
-        log_error "$1 doesn't exist or is not a directory."
+        support_error "$1 doesn't exist or is not a directory."
         return
     fi
 
     if [ -z "$2" ]; then
-        log_error "copy_dir destination is empty."
+        support_error "support_copy_dir destination is empty."
         return
     fi
 
-    log_info "Copying \"${1}\" to \"${WORKDIR}/${2}\""
+    support_info "Copying \"${1}\" to \"${WORKDIR}/${2}\""
     mkdir -p "$(dirname "${WORKDIR}/${2}")"
     cp -a "${1}" "${WORKDIR}/${2}"
 }
@@ -200,11 +200,11 @@ main()
 
     # Tar the file.
     if [ -z "${NOTGZ}" ]; then
-        log_info "Archiving files.."
+        support_info "Archiving files.."
         tar -C "${WORKDIR}" -cf - . | gzip -9c > "${ARCHIVE}" ||
             die "Fatal: Fail to create ${ARCHIVE}"
         local size=$(du -h ${ARCHIVE} | cut -f1)
-        log_info "Archive \"${ARCHIVE}\" (${size}) has been created."
+        support_info "Archive \"${ARCHIVE}\" (${size}) has been created."
 
         # Outputs the name of the archive created.
         readlink -f "${ARCHIVE}"
