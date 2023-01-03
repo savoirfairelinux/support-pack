@@ -146,11 +146,12 @@ EOF
 }
 
 @test "Copy a file with absolute path" {
+    touch /tmp/support_pack_test_file
     run_conf copy_file_abs_path.conf
-    [ -f fstab ]
+    [ -f support_pack_test_file ]
     [ -f support-pack.txt ]
     cat  <<EOF | diff - support-pack.txt
-[INFO ] Copying "/etc/fstab" to "fstab"
+[INFO ] Copying "/tmp/support_pack_test_file" to "support_pack_test_file"
 EOF
 }
 
@@ -223,15 +224,15 @@ EOF
 }
 
 @test "Copy an absolute path directory" {
-    mkdir -p /tmp/support_pack_test
-    touch /tmp/support_pack_test/test.txt
+    mkdir -p /tmp/support_pack_test_dir
+    touch /tmp/support_pack_test_dir/test.txt
     run_conf copy_dir_abs_path.conf
     [ -f support-pack.txt ]
     cat  <<EOF | diff - support-pack.txt
-[INFO ] Copying "/tmp/support_pack_test" to "support_pack_test"
+[INFO ] Copying "/tmp/support_pack_test_dir" to "support_pack_test_dir"
 EOF
-    [ -d support_pack_test ]
-    [ -f support_pack_test/test.txt ]
+    [ -d support_pack_test_dir ]
+    [ -f support_pack_test_dir/test.txt ]
 }
 
 # If a conf file does not redirect command outputs to log files, the output is
