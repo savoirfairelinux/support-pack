@@ -48,9 +48,12 @@ support_error()
     echo "[ERROR] $*" 1>&2
 }
 
+# Silently check if a command is available.
+# arg1: The command to check availability.
+#
 support_cmd_available()
 {
-    which "$1" > /dev/null 2>&1
+    type "$1" > /dev/null 2>&1
     return $?
 }
 

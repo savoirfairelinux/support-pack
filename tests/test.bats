@@ -84,6 +84,23 @@ hello
 EOF
 }
 
+# Verify that user defined commands are supported in the config file.
+@test "User defined command" {
+    run_conf user_defined.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | diff - support-pack.txt
+[INFO ] Exec command "my_hello"
+[INFO ] Created file "hello.txt"
+EOF
+
+    [ -f hello.txt ]
+    cat  <<EOF | diff - hello.txt
+[SUPPORT-PACK] >>>> my_hello
+Hello!
+
+EOF
+}
+
 # Verify that the "--notgz" option creates a directory and that the path of this
 # directory is printed to stdout.
 @test "No compression" {
