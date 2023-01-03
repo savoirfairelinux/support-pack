@@ -2,6 +2,9 @@
 org='sfl'
 name='support-pack'
 
+[alpine]
+distro='alpine'
+
 [build]
 command='cd tests && bats .'
-
+flavors='alpine'
