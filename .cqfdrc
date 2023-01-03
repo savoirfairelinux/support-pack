@@ -5,6 +5,9 @@ name='support-pack'
 [alpine]
 distro='alpine'
 
+[fedora]
+distro='fedora'
+
 [build]
 command='cd tests && bats .'
-flavors='alpine'
+flavors='alpine fedora'
