@@ -145,6 +145,15 @@ EOF
 EOF
 }
 
+@test "Copy a file with absolute path" {
+    run_conf copy_file_abs_path.conf
+    [ -f fstab ]
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] Copying "/etc/fstab" to "fstab"
+EOF
+}
+
 @test "Copy a directory that doesn't exist" {
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
@@ -169,14 +178,15 @@ EOF
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
     cat  <<EOF | cmp - support-pack.txt
-[INFO ] Copying "mydir" to "."
+[INFO ] Copying "mydir" to "mydir"
 [INFO ] Copying "mydir" to "some/nested/dir/"
 EOF
     [ -d mydir ]
+    [ ! -d mydir/mydir ]
     [ -d some ]
     [ -d some/nested ]
     [ -d some/nested/dir ]
-    [ -d some/nested/dir/mydir ]
+    [ ! -d some/nested/dir/mydir ]
 }
 
 @test "Copy a complex directory structure" {
@@ -190,7 +200,7 @@ EOF
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
     cat  <<EOF | cmp - support-pack.txt
-[INFO ] Copying "mydir" to "."
+[INFO ] Copying "mydir" to "mydir"
 [INFO ] Copying "mydir" to "some/nested/dir/"
 EOF
     [ -d mydir ]
@@ -198,18 +208,30 @@ EOF
     [ -d some ]
     [ -d some/nested ]
     [ -d some/nested/dir ]
-    [ -d some/nested/dir/mydir ]
-    [ -d some/nested/dir/mydir/c ]
+    [ -d some/nested/dir ]
+    [ -d some/nested/dir/c ]
     [ -f mydir/a ]
     [ -f mydir/b ]
     [ -f mydir/c/d ]
     [ -f mydir/c/e ]
     [ -f mydir/link ]
-    [ -f some/nested/dir/mydir/a ]
-    [ -f some/nested/dir/mydir/b ]
-    [ -f some/nested/dir/mydir/c/d ]
-    [ -f some/nested/dir/mydir/c/e ]
-    [ -f some/nested/dir/mydir/link ]
+    [ -f some/nested/dir/a ]
+    [ -f some/nested/dir/b ]
+    [ -f some/nested/dir/c/d ]
+    [ -f some/nested/dir/c/e ]
+    [ -f some/nested/dir/link ]
+}
+
+@test "Copy an absolute path directory" {
+    mkdir -p /tmp/support_pack_test
+    touch /tmp/support_pack_test/test.txt
+    run_conf copy_dir_abs_path.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[INFO ] Copying "/tmp/support_pack_test" to "support_pack_test"
+EOF
+    [ -d support_pack_test ]
+    [ -f support_pack_test/test.txt ]
 }
 
 # If a conf file does not redirect command outputs to log files, the output is

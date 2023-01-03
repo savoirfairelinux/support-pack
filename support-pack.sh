@@ -126,7 +126,7 @@ support_copy_file()
 
     local dst="$2"
     if [ -z "$dst" ]; then
-        dst="$1"
+        dst="$(basename "${1}")"
     fi
 
     support_info "Copying \"$1\" to \"${dst}\""
@@ -148,11 +148,11 @@ support_copy_dir()
 
     local dst="$2"
     if [ -z "$dst" ]; then
-        dst=$(dirname "${1}")
+        dst=$(basename "${1}")
     fi
 
     support_info "Copying \"${1}\" to \"${dst}\""
-    mkdir -p "${WORKDIR}/${dst}"
+    mkdir -p "$(dirname "${WORKDIR}/${dst}")"
     cp -r -L "${1}" "${WORKDIR}/${dst}"
 }
 
