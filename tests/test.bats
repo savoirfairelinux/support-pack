@@ -113,6 +113,17 @@ EOF
 EOF
 }
 
+# Test a command that does not exists.
+@test "Unavailable command conf" {
+    run_conf unavailable_command.conf
+    [ -f support-pack.txt ]
+    cat  <<EOF | cmp - support-pack.txt
+[ERROR] Command "command_that_doesnt_exists" is not available
+[ERROR] "empty.txt" was omitted because it is empty
+EOF
+    [ ! -f empty.txt ]
+}
+
 @test "Copy a file that doesn't exist" {
     run_conf copy_file.conf
     [ -f support-pack.txt ]

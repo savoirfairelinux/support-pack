@@ -48,6 +48,12 @@ support_error()
     echo "[ERROR] $*" 1>&2
 }
 
+support_cmd_available()
+{
+    which "$1" > /dev/null 2>&1
+    return $?
+}
+
 # Execute a command while adding the support-pack boilerplate.
 #
 # When wrapping a command with support_cmd,
@@ -63,6 +69,11 @@ support_error()
 support_cmd()
 {
     local ret
+
+    if ! support_cmd_available "$1"; then
+        support_error "Command \"$1\" is not available"
+        return
+    fi
 
     echo "[SUPPORT-PACK] >>>> $*"
     support_info "Exec command \"$*\""
@@ -80,7 +91,8 @@ support_cmd()
     echo
 }
 
-# Redirect stdin to a support-pack file.
+# Redirect stdin to a support-pack file. If the file does not contain at least 1
+# byte, it is omitted from the support-pack archive.
 # arg1: name of the file.
 #
 # examples:
@@ -90,8 +102,14 @@ support_log_file()
 {
     local tmpfile=$(mktemp)
     cat >>"${tmpfile}"
-    mv -f "${tmpfile}" "$WORKDIR/$1"
-    support_info "Created file \"$1\""
+    # "-s" is FILE exists and has a size greater than zero
+    if [ -s "${tmpfile}" ]; then
+        mv -f "${tmpfile}" "$WORKDIR/$1"
+        support_info "Created file \"$1\""
+    else
+        rm -f "${tmpfile}"
+        support_error "\"$1\" was omitted because it is empty"
+    fi
 }
 
 # Copy a file to the support-pack.
