@@ -61,7 +61,7 @@ run_conf()
 
 @test "support_info and support_error" {
     run_conf info.conf
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] An info message
 [ERROR] An error message
 EOF
@@ -71,13 +71,13 @@ EOF
 @test "Hello conf" {
     run_conf hello.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Exec command "echo hello"
 [INFO ] Created file "hello.txt"
 EOF
 
     [ -f hello.txt ]
-    cat  <<EOF | cmp - hello.txt
+    cat  <<EOF | diff - hello.txt
 [SUPPORT-PACK] >>>> echo hello
 hello
 
@@ -99,7 +99,7 @@ EOF
 @test "Failed command conf" {
     run_conf failed_command.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Exec command "command_that_fails"
 [ERROR] "command_that_fails" returned a non-zero error code: 1
 	-> This is an error
@@ -107,7 +107,7 @@ EOF
 EOF
 
     [ -f command_that_fails.txt ]
-    cat  <<EOF | cmp - command_that_fails.txt
+    cat  <<EOF | diff - command_that_fails.txt
 [SUPPORT-PACK] >>>> command_that_fails
 
 EOF
@@ -117,7 +117,7 @@ EOF
 @test "Unavailable command conf" {
     run_conf unavailable_command.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [ERROR] Command "command_that_doesnt_exists" is not available
 [ERROR] "empty.txt" was omitted because it is empty
 EOF
@@ -127,7 +127,7 @@ EOF
 @test "Copy a file that doesn't exist" {
     run_conf copy_file.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [ERROR] test.txt doesn't exist or is not a regular file.
 [ERROR] test.txt doesn't exist or is not a regular file.
 EOF
@@ -139,7 +139,7 @@ EOF
     [ -f test.txt ]
     [ -f some/directory/file.txt ]
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Copying "test.txt" to "test.txt"
 [INFO ] Copying "test.txt" to "some/directory/file.txt"
 EOF
@@ -149,7 +149,7 @@ EOF
     run_conf copy_file_abs_path.conf
     [ -f fstab ]
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Copying "/etc/fstab" to "fstab"
 EOF
 }
@@ -157,7 +157,7 @@ EOF
 @test "Copy a directory that doesn't exist" {
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [ERROR] mydir doesn't exist or is not a directory.
 [ERROR] mydir doesn't exist or is not a directory.
 EOF
@@ -167,7 +167,7 @@ EOF
     touch mydir
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [ERROR] mydir doesn't exist or is not a directory.
 [ERROR] mydir doesn't exist or is not a directory.
 EOF
@@ -177,7 +177,7 @@ EOF
     mkdir mydir
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Copying "mydir" to "mydir"
 [INFO ] Copying "mydir" to "some/nested/dir/"
 EOF
@@ -199,7 +199,7 @@ EOF
     ln -sf c/e mydir/link
     run_conf copy_dir.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Copying "mydir" to "mydir"
 [INFO ] Copying "mydir" to "some/nested/dir/"
 EOF
@@ -227,7 +227,7 @@ EOF
     touch /tmp/support_pack_test/test.txt
     run_conf copy_dir_abs_path.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 [INFO ] Copying "/tmp/support_pack_test" to "support_pack_test"
 EOF
     [ -d support_pack_test ]
@@ -239,7 +239,7 @@ EOF
 @test "Output to stdout conf" {
     run_conf output_to_stdout.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 echo outside of log file
 EOF
 }
@@ -249,7 +249,7 @@ EOF
 @test "Output to stderr conf" {
     run_conf output_to_stderr.conf
     [ -f support-pack.txt ]
-    cat  <<EOF | cmp - support-pack.txt
+    cat  <<EOF | diff - support-pack.txt
 echo outside of log file
 EOF
 }
