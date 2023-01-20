@@ -108,3 +108,17 @@ itself in a file named `support-pack.txt`.
 If `support-pack` exits with a zero return code, the only line produced on
 stdout will be the name of the archive that was produced or the name of the
 support-pack directory if the archiving step was skipped.
+
+## License
+
+`Copyright (C) 2021-present Savoir-faire Linux Inc.`
+
+Support-pack is released under the Apache 2 license.
+
+## About
+
+CISCO routers contained a `show tech-support` command that would output lots of
+information about the system state. This text would be retrieved via SSH, telnet
+or a serial port, dumped to a file and sent to the support team for further
+investigation. `support-pack` goal is to provide a modernized and configurable
+version of this tool for embedded Linux systems.
