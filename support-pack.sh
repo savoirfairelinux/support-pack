@@ -219,6 +219,13 @@ main()
     # it's ok to ignore any remaining output.
     . "$SUPPORT_PACK_CONF"  2>&1 | tee -a "${WORKDIR}/${LOGFILE}" 1>&2
 
+    # Create a root directory with the same name as the archive
+    local rootdir="${WORKDIR}/support-pack-${TSTAMP}"
+    mkdir -p "${rootdir}"
+
+    # Move all files from WORKDIR to the root directory
+    find "${WORKDIR}" -maxdepth 1 ! -name "$(basename ${rootdir})" -exec mv {} "${rootdir}" \;
+
     # Tar the file.
     if [ -z "${NOTGZ}" ]; then
         support_info "Archiving files.."

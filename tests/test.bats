@@ -51,6 +51,9 @@ run_conf()
     [ "$(cat stdout.txt)" = "$(pwd)/$archive" ]
 
     tar -xf $archive
+
+    # Move to the extracted directory.
+    cd support-pack-*
 }
 
 # Generates an archive with a single support-pack.txt file.
@@ -107,6 +110,7 @@ EOF
     ${SUPPORT_PACK} ${CONFDIR}/hello.conf --notgz 1>stdout.txt 2>stderr.txt
     [ $? -eq 0 ]
     local dirname="$(cat stdout.txt)"
+    dirname="$dirname/${dirname##*/}"
     [ -d "$dirname" ]
     [ -f "$dirname/hello.txt" ]
 }
