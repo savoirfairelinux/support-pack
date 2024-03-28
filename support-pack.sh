@@ -222,7 +222,7 @@ main()
     # Tar the file.
     if [ -z "${NOTGZ}" ]; then
         support_info "Archiving files.."
-        tar -C "${WORKDIR}" -cf - . | gzip -9c > "${ARCHIVE}" ||
+        tar -C "/tmp"  -cf - support-pack-${TSTAMP} | gzip -9c > "${ARCHIVE}" ||
             die "Fatal: Fail to create ${ARCHIVE}"
         local size=$(du -h ${ARCHIVE} | cut -f1)
         support_info "Archive \"${ARCHIVE}\" (${size}) has been created."
