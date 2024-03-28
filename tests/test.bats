@@ -51,6 +51,9 @@ run_conf()
     [ "$(cat stdout.txt)" = "$(pwd)/$archive" ]
 
     tar -xf $archive
+
+    # Move to the extracted directory.
+    cd support-pack-*
 }
 
 # Generates an archive with a single support-pack.txt file.
